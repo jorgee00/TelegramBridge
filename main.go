@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/yanzay/tbot/v2"
 )
 
 func composer(status, event, actor, repo, workflow, link string) string {
@@ -28,10 +26,13 @@ func composer(status, event, actor, repo, workflow, link string) string {
 	repo = replacer.Replace(repo)
 
 	actor = replacer.Replace(actor)
-	
+
 	// Message text composing
 	text = icons[strings.ToLower(status)] + "  *" + strings.ToUpper(event) + "*\n"
 	text += "was made at " + repo + " \nby " + actor + "\n"
+	if event == "push" {
+		text += "the message of the commit was: \n" + os.Getenv("GITHUB_EVENT.HEAD_COMMIT_MESSAGE")
+	}
 	text += "Check here " + "[" + workflow + "](" + link + ")"
 
 	return text
