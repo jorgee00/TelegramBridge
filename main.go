@@ -29,6 +29,8 @@ func composer(status, event, actor, repo, workflow, link, message string) string
 
 	actor = replacer.Replace(actor)
 
+	message = replacer.Replace(message)
+
 	// Message text composing
 	text = icons[strings.ToLower(status)] + "  *" + strings.ToUpper(event) + "*\n"
 	text += "was made at " + repo + " \nby " + actor + "\n"
