@@ -34,7 +34,7 @@ func composer(status, event, actor, repo, workflow, link, message string) string
 	// Message text composing
 	text = icons[strings.ToLower(status)] + "  *" + strings.ToUpper(event) + "*\n"
 	text += "was made at " + repo + " \nby " + actor + "\n"
-	text += "the message of the commit was: \n" + message
+	text += "The message of the commit was: \n" + message + "\n"
 	text += "Check here " + "[" + workflow + "](" + link + ")"
 
 	return text
