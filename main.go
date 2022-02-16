@@ -10,7 +10,7 @@ import (
 	"github.com/yanzay/tbot/v2"
 )
 
-func composer(status, event, actor, repo, workflow, link string) string {
+func composer(status, event, actor, repo, workflow, link, message string) string {
 	var text string
 
 	// choose icon based on the build status
@@ -32,9 +32,7 @@ func composer(status, event, actor, repo, workflow, link string) string {
 	// Message text composing
 	text = icons[strings.ToLower(status)] + "  *" + strings.ToUpper(event) + "*\n"
 	text += "was made at " + repo + " \nby " + actor + "\n"
-	if event == "push" {
-		text += "the message of the commit was: \n" + os.Getenv("GITHUB_EVENT.HEAD_COMMIT_MESSAGE")
-	}
+	text += "the message of the commit was: \n" + message
 	text += "Check here " + "[" + workflow + "](" + link + ")"
 
 	return text
@@ -61,11 +59,12 @@ func main() {
 	var (
 		// inputs provided by Github Actions runtime
 		// should be defined in the action.yml
-		token  = os.Getenv("INPUT_TOKEN")
-		chat   = os.Getenv("INPUT_CHAT")
-		status = os.Getenv("INPUT_STATUS")
-		event  = os.Getenv("INPUT_EVENT")
-		actor  = os.Getenv("INPUT_ACTOR")
+		token   = os.Getenv("INPUT_TOKEN")
+		chat    = os.Getenv("INPUT_CHAT")
+		status  = os.Getenv("INPUT_STATUS")
+		event   = os.Getenv("INPUT_EVENT")
+		actor   = os.Getenv("INPUT_ACTOR")
+		message = os.Getenv("INPUT_MESSAGE")
 
 		// github environment context
 		workflow = os.Getenv("GITHUB_WORKFLOW")
@@ -80,7 +79,7 @@ func main() {
 	link := linkgen(repo, event)
 
 	// Prepare message to send
-	msg := composer(status, event, actor, repo, workflow, link)
+	msg := composer(status, event, actor, repo, workflow, link, message)
 
 	// Send to chat using Markdown format
 	_, err := c.SendMessage(chat, msg, tbot.OptParseModeMarkdown)
