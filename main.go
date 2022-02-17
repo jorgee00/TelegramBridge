@@ -22,7 +22,7 @@ func composer(status, event, actor, repo, link, message string) string {
 
 	replacer := strings.NewReplacer("_", "\\_", "-", "\\-", ".", "\\.")
 
-	// removing symbols to avoide markdown parser error
+	// removing symbols to avoid markdown parser error
 	event = replacer.Replace(event)
 
 	repo = replacer.Replace(repo)
