@@ -10,7 +10,7 @@ import (
 	"github.com/yanzay/tbot/v2"
 )
 
-func composer(status, event, actor, repo, link, message string) string {
+func composer(status, event, actor, repo, workflow, link, message string) string {
 	var text string
 
 	// choose icon based on the build status
@@ -22,7 +22,7 @@ func composer(status, event, actor, repo, link, message string) string {
 
 	replacer := strings.NewReplacer("_", "\\_", "-", "\\-", ".", "\\.")
 
-	// removing symbols to avoid markdown parser error
+	// removing symbols to avoide markdown parser error
 	event = replacer.Replace(event)
 
 	repo = replacer.Replace(repo)
@@ -32,8 +32,9 @@ func composer(status, event, actor, repo, link, message string) string {
 	message = replacer.Replace(message)
 
 	// Message text composing
-	text = icons[strings.ToLower(status)] + " \\[[" + repo[strings.Index(repo, "/")+1:len([]rune(repo))] + "]\\](" + link + ")\\- " + actor + "\n"
+	text = icons[strings.ToLower(status)] + "\\[[" + repo[strings.Index(repo, "/")+1:len([]rune(repo))] + "](" + link + ")\\]\\- " + actor + "\n"
 	text += "*" + strings.ToUpper(event) + "*: " + message + "\n"
+	text += "Check here " + "[" + workflow + "](" + link + ")"
 
 	return text
 }
@@ -66,7 +67,9 @@ func main() {
 		actor   = os.Getenv("INPUT_ACTOR")
 		message = os.Getenv("INPUT_MESSAGE")
 
-		repo = os.Getenv("GITHUB_REPOSITORY")
+		// github environment context
+		workflow = os.Getenv("GITHUB_WORKFLOW")
+		repo     = os.Getenv("GITHUB_REPOSITORY")
 		// commit   = os.Getenv("GITHUB_SHA")
 	)
 
@@ -77,7 +80,7 @@ func main() {
 	link := linkgen(repo, event)
 
 	// Prepare message to send
-	msg := composer(status, event, actor, repo, link, message)
+	msg := composer(status, event, actor, repo, workflow, link, message)
 
 	// Send to chat using Markdown format
 	_, err := c.SendMessage(chat, msg, tbot.OptParseModeMarkdown)
