@@ -15,9 +15,9 @@ func composer(status, event, actor, repo, workflow, link, message string) string
 
 	// choose icon based on the build status
 	icons := map[string]string{
-		"failure":   "❗️❗️❗️",
-		"cancelled": "❕❕❕",
-		"success":   "✅✅✅",
+		"failure":   "❗",
+		"cancelled": "❕",
+		"success":   "✅",
 	}
 
 	replacer := strings.NewReplacer("_", "\\_", "-", "\\-", ".", "\\.")
@@ -32,9 +32,8 @@ func composer(status, event, actor, repo, workflow, link, message string) string
 	message = replacer.Replace(message)
 
 	// Message text composing
-	text = icons[strings.ToLower(status)] + "  *" + strings.ToUpper(event) + "*\n"
-	text += "was made at " + repo[strings.Index(repo, "/"):len([]rune(repo))] + " \nby " + actor + "\n"
-	text += "The message of the commit was: \n" + message + "\n"
+	text = icons[strings.ToLower(status)] + "[" + repo[strings.Index(repo, "/")+1:len([]rune(repo))] + "]- " + actor + "\n"
+	text += "**" + strings.ToUpper(event) + "**: " + message + "\n"
 	text += "Check here " + "[" + workflow + "](" + link + ")"
 
 	return text
