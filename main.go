@@ -32,7 +32,7 @@ func composer(status, event, actor, repo, link, message string) string {
 	message = replacer.Replace(message)
 
 	// Message text composing
-	text = icons[strings.ToLower(status)] + "[" + repo[strings.Index(repo, "/")+1:len([]rune(repo))] + "](" + link + ") \\- " + actor + "\n"
+	text = icons[strings.ToLower(status)] + " [" + repo[strings.Index(repo, "/")+1:len([]rune(repo))] + "](" + link + ") \\- " + actor + "\n"
 	text += "*" + strings.ToUpper(event) + "*: " + message
 
 	return text
